@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div style="text-align: center; margin-top: 2rem;">
+    <h1>404 – 댓글을 찾을 수 없습니다</h1>
+    <p>요청하신 댓글(ID: {{ request.resolver_match.kwargs.comment_id }})이 존재하지 않습니다.</p>
+    <a href="{% url 'pybo:index' %}">질문 목록으로 돌아가기</a>
+  </div>
+{% endblock %}
