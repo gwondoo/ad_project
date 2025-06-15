@@ -76,7 +76,6 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "ad_project",
         "USER": "ad_project_user",
-        # "HOST": "dpg-d17bcqodl3ps73a8t2o0-a",
         "HOST": "dpg-d17bcqodl3ps73a8t2o0-a.oregon-postgres.render.com",
         "PORT": 5432,
         "PASSWORD": "CPCz7t02tJOTELqeuXSEZnd0Lj0qHbpE",
