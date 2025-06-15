@@ -9,7 +9,7 @@ class Question(models.Model):
     author      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
     modify_date = models.DateTimeField(null=True, blank=True, auto_now_add=True)
-
+    voter = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='voter_question')
     def __str__(self):
         return self.subject
 
@@ -29,7 +29,7 @@ class Answer(models.Model):
     author      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
     modify_date = models.DateTimeField(null=True, blank=True,auto_now_add=True)
-
+    voter = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='voter_answer')
     def __str__(self):
         return f"Answer to {self.question.id}"
 
