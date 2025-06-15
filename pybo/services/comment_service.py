@@ -19,24 +19,36 @@ def get_comment_by_id(comment_id: int) -> Comment:
         raise CommentNotFound(f"Comment with id={comment_id} not found")
 
 
-def create_comment(question_id: int, content: str, author) -> Comment:
-    """
-    주어진 question_id에 새로운 Comment 생성.
-    질문이 없으면 CommentNotFound 예외 발생.
-    """
-    try:
-        question = Question.objects.get(pk=question_id)
-    except Question.DoesNotExist:
-        raise CommentNotFound(f"Question with id={question_id} not found")
+from pybo.models import Question, Answer, Comment  # 필요시 import 추가
+from django.utils import timezone
 
-    comment = Comment(
-        question=question,
-        content=content,
-        author=author,
-        create_date=timezone.now()
-    )
+def create_comment(question_id=None, answer_id=None, content=None, author=None) -> Comment:
+    """
+    질문 또는 답변에 댓글 생성.
+    하나는 반드시 지정해야 하며, 둘 다 None이면 ValueError 발생.
+    """
+    if question_id is not None:
+        question = Question.objects.get(pk=question_id)
+        comment = Comment(
+            question=question,
+            content=content,
+            author=author,
+            create_date=timezone.now()
+        )
+    elif answer_id is not None:
+        answer = Answer.objects.get(pk=answer_id)
+        comment = Comment(
+            answer=answer,
+            content=content,
+            author=author,
+            create_date=timezone.now()
+        )
+    else:
+        raise ValueError("question_id 또는 answer_id 중 하나는 반드시 필요합니다.")
+
     comment.save()
     return comment
+
 
 
 def modify_comment(comment: Comment, content: str) -> Comment:

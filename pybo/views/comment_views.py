@@ -1,71 +1,122 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 
 from ..forms import CommentForm
-from pybo.services.comment_service import (
-    get_comment_by_id,
-    create_comment,
-    modify_comment,
-    delete_comment,
-    CommentNotFound,
-)
+from ..models import Question, Answer, Comment
+
 
 @login_required(login_url='common:login')
 def comment_create(request, question_id):
     """
-    pybo 댓글등록
+    질문 댓글 등록
     """
-    if request.method == 'POST':
+    question = get_object_or_404(Question, pk=question_id)
+
+    if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
-            try:
-                create_comment(question_id=question_id, content=data['content'], author=request.user)
-            except CommentNotFound:
-                return render(request, 'errors/question_not_found.html', status=404)
-            return redirect('pybo:detail', question_id=question_id)
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.create_date = timezone.now()
+            comment.question = question
+            comment.save()
+            return redirect('pybo:detail', question_id=question.id)
     else:
         form = CommentForm()
     return render(request, 'pybo/comment_form.html', {'form': form})
 
+
 @login_required(login_url='common:login')
 def comment_modify(request, comment_id):
     """
-    pybo 댓글수정
+    질문 댓글 수정
     """
-    try:
-        comment = get_comment_by_id(comment_id)
-    except CommentNotFound:
-        return render(request, 'errors/comment_not_found.html', status=404)
-
+    comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '수정권한이 없습니다')
         return redirect('pybo:detail', question_id=comment.question.id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CommentForm(request.POST, instance=comment)
         if form.is_valid():
-            data = form.cleaned_data
-            modify_comment(comment, content=data['content'])
+            comment = form.save(commit=False)
+            comment.modify_date = timezone.now()
+            comment.save()
             return redirect('pybo:detail', question_id=comment.question.id)
     else:
         form = CommentForm(instance=comment)
     return render(request, 'pybo/comment_form.html', {'form': form})
 
+
 @login_required(login_url='common:login')
 def comment_delete(request, comment_id):
     """
-    pybo 댓글삭제
+    질문 댓글 삭제
     """
-    try:
-        comment = get_comment_by_id(comment_id)
-    except CommentNotFound:
-        return render(request, 'errors/comment_not_found.html', status=404)
-
+    comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '삭제권한이 없습니다')
-        return redirect('pybo:detail', question_id=comment.question.id)
-
-    delete_comment(comment)
+    else:
+        comment.delete()
     return redirect('pybo:detail', question_id=comment.question.id)
+
+
+# ---------------------
+# 답변에 달린 댓글 관련 뷰
+# ---------------------
+
+@login_required(login_url='common:login')
+def comment_create_answer(request, answer_id):
+    """
+    답변 댓글 등록
+    """
+    answer = get_object_or_404(Answer, pk=answer_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.create_date = timezone.now()
+            comment.answer = answer
+            comment.save()
+            return redirect('pybo:detail', question_id=answer.question.id)
+    else:
+        form = CommentForm()
+    return render(request, 'pybo/comment_form.html', {'form': form})
+
+
+@login_required(login_url='common:login')
+def comment_modify_answer(request, comment_id):
+    """
+    답변 댓글 수정
+    """
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user != comment.author:
+        messages.error(request, '수정권한이 없습니다')
+        return redirect('pybo:detail', question_id=comment.answer.question.id)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.modify_date = timezone.now()
+            comment.save()
+            return redirect('pybo:detail', question_id=comment.answer.question.id)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'pybo/comment_form.html', {'form': form})
+
+
+@login_required(login_url='common:login')
+def comment_delete_answer(request, comment_id):
+    """
+    답변 댓글 삭제
+    """
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user != comment.author:
+        messages.error(request, '삭제권한이 없습니다')
+    else:
+        comment.delete()
+    return redirect('pybo:detail', question_id=comment.answer.question.id)
