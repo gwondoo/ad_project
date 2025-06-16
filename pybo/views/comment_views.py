@@ -2,16 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-
 from ..forms import CommentForm
 from ..models import Question, Answer, Comment
 
 
 @login_required(login_url='common:login')
 def comment_create(request, question_id):
-    """
-    질문 댓글 등록
-    """
     question = get_object_or_404(Question, pk=question_id)
 
     if request.method == "POST":
@@ -30,9 +26,6 @@ def comment_create(request, question_id):
 
 @login_required(login_url='common:login')
 def comment_modify(request, comment_id):
-    """
-    질문 댓글 수정
-    """
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '수정권한이 없습니다')
@@ -52,9 +45,6 @@ def comment_modify(request, comment_id):
 
 @login_required(login_url='common:login')
 def comment_delete(request, comment_id):
-    """
-    질문 댓글 삭제
-    """
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '삭제권한이 없습니다')
@@ -63,15 +53,8 @@ def comment_delete(request, comment_id):
     return redirect('pybo:detail', question_id=comment.question.id)
 
 
-# ---------------------
-# 답변에 달린 댓글 관련 뷰
-# ---------------------
-
 @login_required(login_url='common:login')
 def comment_create_answer(request, answer_id):
-    """
-    답변 댓글 등록
-    """
     answer = get_object_or_404(Answer, pk=answer_id)
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -89,9 +72,6 @@ def comment_create_answer(request, answer_id):
 
 @login_required(login_url='common:login')
 def comment_modify_answer(request, comment_id):
-    """
-    답변 댓글 수정
-    """
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '수정권한이 없습니다')
@@ -111,9 +91,6 @@ def comment_modify_answer(request, comment_id):
 
 @login_required(login_url='common:login')
 def comment_delete_answer(request, comment_id):
-    """
-    답변 댓글 삭제
-    """
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
         messages.error(request, '삭제권한이 없습니다')

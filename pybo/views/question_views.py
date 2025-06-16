@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponse, FileResponse
-
 from ..forms import QuestionForm
 from ..models import Question
 from pybo.services.question_service import (
@@ -16,17 +15,11 @@ from pybo.services.question_service import (
 
 
 def question_list(request):
-    """
-    pybo 질문목록
-    """
     questions = Question.objects.order_by('-create_date')
     return render(request, 'pybo/question_list.html', {'question_list': questions})
 
 
 def question_detail(request, question_id):
-    """
-    pybo 질문 상세 - JsonResponse 예시
-    """
     try:
         question = get_question_by_id(question_id)
     except QuestionNotFound:
@@ -43,9 +36,6 @@ def question_detail(request, question_id):
 
 @login_required(login_url='common:login')
 def question_create(request):
-    """
-    pybo 질문등록 - 파일, 세션, 쿠키 활용 예시
-    """
     if request.method == 'POST':
         form = QuestionForm(request.POST, request.FILES)
         if form.is_valid():
@@ -71,9 +61,6 @@ def question_create(request):
 
 @login_required(login_url='common:login')
 def question_modify(request, question_id):
-    """
-    pybo 질문수정
-    """
     try:
         question = get_question_by_id(question_id)
     except QuestionNotFound:
@@ -103,9 +90,6 @@ def question_modify(request, question_id):
 
 @login_required(login_url='common:login')
 def question_delete(request, question_id):
-    """
-    pybo 질문삭제 - HttpResponse 상태 코드 예시
-    """
     try:
         question = get_question_by_id(question_id)
     except QuestionNotFound:
@@ -120,9 +104,6 @@ def question_delete(request, question_id):
 
 
 def download_attachment(request, question_id):
-    """
-    pybo 첨부파일 다운로드 - FileResponse 예시
-    """
     try:
         question = get_question_by_id(question_id)
     except QuestionNotFound:

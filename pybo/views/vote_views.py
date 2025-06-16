@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-
 from ..models import Question, Answer
 from pybo.services.vote_service import (
     vote_question_service,
@@ -16,9 +15,6 @@ from pybo.services.vote_service import (
 
 @login_required(login_url='common:login')
 def vote_question(request, question_id):
-    """
-    pybo 질문 추천
-    """
     try:
         vote_question_service(question_id, request.user)
     except QuestionNotFound:
@@ -32,10 +28,7 @@ def vote_question(request, question_id):
 
 @login_required(login_url='common:login')
 def vote_answer(request, answer_id):
-    """
-    pybo 답변 추천
-    """
-    from pybo.models import Answer  # 반드시 Answer 모델 가져와야 함
+    from pybo.models import Answer  
 
     try:
         answer = vote_answer_service(answer_id, request.user)

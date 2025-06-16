@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
-
 from ..forms import AnswerForm
 from pybo.services.answer_service import (
     get_answer_by_id,
@@ -15,9 +14,6 @@ from pybo.services.answer_service import (
 
 @login_required(login_url='common:login')
 def answer_create(request, question_id):
-    """
-    pybo 답변등록
-    """
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
@@ -39,9 +35,6 @@ def answer_create(request, question_id):
 
 @login_required(login_url='common:login')
 def answer_modify(request, answer_id):
-    """
-    pybo 답변수정
-    """
     try:
         answer = get_answer_by_id(answer_id)
     except AnswerNotFound:
@@ -67,9 +60,6 @@ def answer_modify(request, answer_id):
 
 @login_required(login_url='common:login')
 def answer_delete(request, answer_id):
-    """
-    pybo 답변삭제
-    """
     try:
         answer = get_answer_by_id(answer_id)
     except AnswerNotFound:

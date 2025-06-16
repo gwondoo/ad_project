@@ -1,5 +1,3 @@
-# pybo/services/vote_service.py
-
 from pybo.models import Question, Answer
 
 class QuestionNotFound(Exception):
@@ -24,10 +22,6 @@ class AlreadyVoted(Exception):
 
 
 def vote_question_service(question_id: int, user):
-    """
-    주어진 question_id로 Question 조회 후 추천 처리.
-    권한 오류 및 중복 추천 시 예외 발생.
-    """
     try:
         question = Question.objects.get(pk=question_id)
     except Question.DoesNotExist:
@@ -41,10 +35,6 @@ def vote_question_service(question_id: int, user):
 
 
 def vote_answer_service(answer_id: int, user):
-    """
-    주어진 answer_id로 Answer 조회 후 추천 처리.
-    권한 오류 및 중복 추천 시 예외 발생.
-    """
     try:
         answer = Answer.objects.get(pk=answer_id)
     except Answer.DoesNotExist:
