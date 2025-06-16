@@ -35,12 +35,21 @@ def vote_answer(request, answer_id):
     """
     pybo 답변 추천
     """
+    from pybo.models import Answer  # 반드시 Answer 모델 가져와야 함
+
     try:
         answer = vote_answer_service(answer_id, request.user)
+        return redirect('pybo:detail', question_id=answer.question.id)
+
+    except CannotVoteOwnAnswer:
+        answer = Answer.objects.get(pk=answer_id)
+        messages.error(request, '본인이 작성한 글은 추천할 수 없습니다')
+        return redirect('pybo:detail', question_id=answer.question.id)
+
+    except AlreadyVoted:
+        answer = Answer.objects.get(pk=answer_id)
+        messages.error(request, '이미 추천했습니다')
+        return redirect('pybo:detail', question_id=answer.question.id)
+
     except AnswerNotFound:
         return render(request, 'errors/answer_not_found.html', status=404)
-    except CannotVoteOwnAnswer:
-        messages.error(request, '본인이 작성한 글은 추천할 수 없습니다')
-    except AlreadyVoted:
-        messages.error(request, '이미 추천했습니다')
-    return redirect('pybo:detail', question_id=answer.question.id)

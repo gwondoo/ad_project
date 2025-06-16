@@ -61,7 +61,7 @@
                             <a href="#" class="small delete save-scroll"
                                data-uri="{% url 'pybo:comment_delete_question' comment.id %}">삭제</a>
                             {% endif %}
-                            #}
+                            
                         </div>
                     {% endfor %}
                     </div>
@@ -71,7 +71,7 @@
                         <a href="{% url 'pybo:comment_create_question' question.id  %}"
                            class="small save-scroll"><small>댓글 추가 ..</small></a>
                     </div>
-                    #}
+                    
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
                             <a href="#" class="small delete save-scroll"
                                data-uri="{% url 'pybo:comment_delete_answer' comment.id %}">삭제</a>
                             {% endif %}
-                            #}
+                            
                         </div>
                     {% endfor %}
                     </div>
@@ -139,7 +139,7 @@
                         <a href="{% url 'pybo:comment_create_answer' answer.id  %}"
                            class="small save-scroll"><small>댓글 추가 ..</small></a>
                     </div>
-                    #}
+                    
                 </div>
             </div>
         </div>
