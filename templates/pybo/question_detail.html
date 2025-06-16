@@ -55,7 +55,7 @@
                                 (수정:{{ comment.modify_date }})
                                 {% endif %}
                             </span>
-                            {# 댓글 수정/삭제 링크 비활성화
+                            {# 댓글 수정/삭제 링크 비활성화 #}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_question' comment.id %}" class="small save-scroll">수정</a>,
                             <a href="#" class="small delete save-scroll"
@@ -66,7 +66,7 @@
                     {% endfor %}
                     </div>
                     {% endif %}
-                    {# 댓글 추가 링크 비활성화
+                    {# 댓글 추가 링크 비활성화 #}
                     <div>
                         <a href="{% url 'pybo:comment_create_question' question.id  %}"
                            class="small save-scroll"><small>댓글 추가 ..</small></a>
@@ -123,7 +123,7 @@
                                 (수정:{{ comment.modify_date }})
                                 {% endif %}
                             </span>
-                            {# 댓글 수정/삭제 링크 비활성화
+                            {# 댓글 수정/삭제 링크 비활성화 #}
                             {% if request.user == comment.author %}
                             <a href="{% url 'pybo:comment_modify_answer' comment.id %}" class="small save-scroll">수정</a>,
                             <a href="#" class="small delete save-scroll"
@@ -134,7 +134,7 @@
                     {% endfor %}
                     </div>
                     {% endif %}
-                    {# 댓글 추가 링크 비활성화
+                    {# 댓글 추가 링크 비활성화 #}
                     <div>
                         <a href="{% url 'pybo:comment_create_answer' answer.id  %}"
                            class="small save-scroll"><small>댓글 추가 ..</small></a>
